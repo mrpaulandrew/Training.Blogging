@@ -1,0 +1,96 @@
+{
+	"name": "Get Fabric Item ID",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get Workspace Items by Type",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"url": {
+						"value": "@concat('https://api.fabric.microsoft.com/v1/workspaces/',pipeline().parameters.WorkspaceId,\n    '/items?type=',\n    pipeline().parameters.ItemType)",
+						"type": "Expression"
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://api.fabric.microsoft.com"
+					}
+				}
+			},
+			{
+				"name": "Return Value",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Filter by Name",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "pipelineReturnValue",
+					"value": [
+						{
+							"key": "ItemsDetails",
+							"value": {
+								"type": "Expression",
+								"content": "@activity('Filter by Name').output.value[0].id"
+							}
+						}
+					],
+					"setSystemVariable": true
+				}
+			},
+			{
+				"name": "Filter by Name",
+				"type": "Filter",
+				"dependsOn": [
+					{
+						"activity": "Get Workspace Items by Type",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get Workspace Items by Type').output.value",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@equals(item().displayName,pipeline().parameters.ItemName)",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"ItemType": {
+				"type": "string"
+			},
+			"WorkspaceId": {
+				"type": "string"
+			},
+			"ItemName": {
+				"type": "string"
+			}
+		},
+		"annotations": []
+	}
+}
