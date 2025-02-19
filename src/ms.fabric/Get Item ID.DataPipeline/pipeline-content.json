@@ -1,0 +1,76 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "name": "Get Item ID",
+        "type": "InvokePipeline",
+        "dependsOn": [],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "waitOnCompletion": true,
+          "operationType": "InvokeADFPipeline",
+          "pipelineName": "Get Fabric Item ID",
+          "parameters": {
+            "ItemType": {
+              "value": "@pipeline().parameters.ItemType",
+              "type": "Expression"
+            },
+            "WorkspaceId": {
+              "value": "@pipeline().DataFactory",
+              "type": "Expression"
+            },
+            "ItemName": {
+              "value": "@pipeline().parameters.ItemName",
+              "type": "Expression"
+            }
+          }
+        },
+        "externalReferences": {
+          "connection": "74972222-2bb5-4b56-bd0e-1275b9aec1f4"
+        }
+      },
+      {
+        "name": "Expose Item ID",
+        "type": "SetVariable",
+        "dependsOn": [
+          {
+            "activity": "Get Item ID",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "variableName": "ItemId",
+          "value": {
+            "value": "@activity('Get Item ID').output.pipelineReturnValue.ItemsDetails",
+            "type": "Expression"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "ItemType": {
+        "type": "string"
+      },
+      "ItemName": {
+        "type": "string"
+      }
+    },
+    "variables": {
+      "ItemId": {
+        "type": "String"
+      }
+    }
+  }
+}
