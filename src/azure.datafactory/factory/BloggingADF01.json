@@ -1,0 +1,9 @@
+{
+	"name": "BloggingADF01",
+	"location": "uksouth",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "aa31d44e-009d-4384-8b38-b47056ff8db1",
+		"tenantId": "d562890e-82fc-42c7-8033-b62200df3d96"
+	}
+}
