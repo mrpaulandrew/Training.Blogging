@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "SharedLake02"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "19bf1453-55f9-b9a5-428e-fe2eeb3bda20"
+  }
+}
